@@ -43,15 +43,15 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data["success"], True)
         self.assertTrue(data["total_categories"])
         self.assertTrue(len(data["categories"]))
-    
-    # def test_get_paginated_questions(self):
-    #     res = self.client().get("/trivia/questions")
-    #     data = json.loads(res.data)
 
-    #     self.assertEqual(res.status_code, 200)
-    #     self.assertEqual(data["success"], True)
-    #     self.assertTrue(data["total_questions"])
-    #     self.assertTrue(len(data["questions"]))
+    def test_paginated_questions(self):
+        res = self.client().get("/trivia/questions")
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data["success"], True)
+        self.assertTrue(data["total_questions"])
+        self.assertTrue(len(data["questions"]))
 
     # def test_404_get_invalid_page(self):
     #     res = self.client().get("/trivia/questions?page=1000")
