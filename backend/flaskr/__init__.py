@@ -177,5 +177,13 @@ def create_app(test_config=None):
     including 404 and 422.
     """
 
+
+    @app.errorhandler(404)
+    def not_found(error):
+        return jsonify({
+            'success': False,
+            'error': 404,
+            'message': 'resource not found'
+        }), 404
     return app
 

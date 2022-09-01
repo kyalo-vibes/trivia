@@ -53,27 +53,27 @@ class TriviaTestCase(unittest.TestCase):
         self.assertTrue(data["total_questions"])
         self.assertTrue(len(data["questions"]))
 
-    # def test_404_get_invalid_page(self):
-    #     res = self.client().get("/trivia/questions?page=1000")
-    #     data = json.loads(res.data)
-
-    #     self.assertEqual(res.status_code, 404)
-    #     self.assertEqual(data["success"], False)
-    #     self.assertEqual(data["message"], "resource not found")
-
-
-    def test_delete_question(self):
-        res = self.client().delete("/trivia/questions/2")
+    def test_404_get_invalid_page(self):
+        res = self.client().get("/trivia/questions?page=1000")
         data = json.loads(res.data)
 
-        question = Question.query.filter(Question.id == 1).one_or_none()
+        self.assertEqual(res.status_code, 404)
+        self.assertEqual(data["success"], False)
+        self.assertEqual(data["message"], "resource not found")
 
-        self.assertEqual(res.status_code, 200)
-        self.assertEqual(data['success'], True)
-        self.assertEqual(data['deleted'], 2)
-        self.assertTrue(data['total_questions'])
-        self.assertTrue(len(data['questions']))
-        self.assertEqual(question, None)
+
+    # def test_delete_question(self):
+    #     res = self.client().delete("/trivia/questions/2")
+    #     data = json.loads(res.data)
+
+    #     question = Question.query.filter(Question.id == 1).one_or_none()
+
+    #     self.assertEqual(res.status_code, 200)
+    #     self.assertEqual(data['success'], True)
+    #     self.assertEqual(data['deleted'], 2)
+    #     self.assertTrue(data['total_questions'])
+    #     self.assertTrue(len(data['questions']))
+    #     self.assertEqual(question, None)
 
 # Make the tests conveniently executable
 if __name__ == "__main__":
