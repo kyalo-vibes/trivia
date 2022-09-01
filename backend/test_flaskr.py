@@ -18,6 +18,13 @@ class TriviaTestCase(unittest.TestCase):
         self.database_path = "postgresql+psycopg2://student:student@{}/{}".format('localhost:5432', self.database_name)
         setup_db(self.app, self.database_path)
 
+        self.new_question = {
+            "question": "Who is Chelsea's most prolific striker?",
+            "answer": "Didier Drogba",
+            "category": "6",
+            "difficulty": 2
+        }
+
         # binds the app to the current context
         with self.app.app_context():
             self.db = SQLAlchemy()
@@ -74,6 +81,11 @@ class TriviaTestCase(unittest.TestCase):
     #     self.assertTrue(data['total_questions'])
     #     self.assertTrue(len(data['questions']))
     #     self.assertEqual(question, None)
+
+    def test_new_question(self):
+        res = self.client().post('/trivia/questions', json=self.new_question)
+        data = json.loads(res.data)
+        pass
 
 # Make the tests conveniently executable
 if __name__ == "__main__":
