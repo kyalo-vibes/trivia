@@ -87,6 +87,11 @@ class TriviaTestCase(unittest.TestCase):
         data = json.loads(res.data)
         pass
 
+    def test_422_new_question_fails(self):
+        res = self.client().post('/trivia/questions', json=self.new_question)
+        data = json.loads(res.data)
+        pass
+
 # Make the tests conveniently executable
 if __name__ == "__main__":
     unittest.main()
