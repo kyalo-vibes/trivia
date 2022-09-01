@@ -1,3 +1,4 @@
+from crypt import methods
 import os
 from flask import Flask, request, abort, jsonify
 from flask_sqlalchemy import SQLAlchemy
@@ -152,7 +153,7 @@ def create_app(test_config=None):
         try:
             if search:
                 selection = Question.query.order_by(Question.id).filter(
-                    Question.question.ilike("%{}%}".format(search))
+                    Question.question.ilike("%{}%".format(search))
                 )
                 current_questions =paginate_questions(request, selection)
 
@@ -191,6 +192,26 @@ def create_app(test_config=None):
     Try using the word "title" to start.
     """
 
+    @app.route("/trivia/questions", methods=["POST"])
+    def search_questions():
+        page =request.args.get('page', 1, type=int)
+        start = (page - 1) * QUESTIONS_PER_PAGE
+        end = start + QUESTIONS_PER_PAGE
+        search = request.form.get('search', '', type=str)
+        search_question = Question.query.filter(Question.question.ilike('%{}%'.format(search))).all()
+        results = [question.format() for question in search_question]
+
+        if search_question is None:
+            abort(422)
+
+        return jsonify({
+            'questions': results[start:end],
+            'total_questions': len(results),
+            'success': True
+        })
+    
+
+
     """
     @TODO:
     Create a GET endpoint to get questions based on category.
@@ -226,5 +247,13 @@ def create_app(test_config=None):
             'error': 404,
             'message': 'resource not found'
         }), 404
+
+    @app.errorhandler(422)
+    def unprocessable(error):
+        return jsonify({
+            'success': False,
+            'error': 422,
+            'message': unprocessable
+        }), 422
     return app
 
