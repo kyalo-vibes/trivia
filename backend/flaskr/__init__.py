@@ -80,7 +80,7 @@ def create_app(test_config=None):
     """
 
 
-    @app.route('/trivia/questions', methods=["GET"])
+    @app.route('/trivia/questions')
     def get_paginated_questions():
         selection = Question.query.order_by(Question.id).all()
         current_questions = paginate_questions(request, selection)
@@ -144,10 +144,10 @@ def create_app(test_config=None):
     def create_question():
         body = request.get_json()
 
-        new_question = body.get("question", None)
-        new_answer = body.get("answer", None)
-        new_category = body.get("category", None)
-        new_difficulty = body.get("difficulty", None)
+        new_question = body.get("question")
+        new_answer = body.get("answer")
+        new_category = body.get("category")
+        new_difficulty = body.get("difficulty")
         search = body.get("search", None)
 
         try:
@@ -155,7 +155,7 @@ def create_app(test_config=None):
                 selection = Question.query.order_by(Question.id).filter(
                     Question.question.ilike("%{}%".format(search))
                 )
-                current_questions =paginate_questions(request, selection)
+                current_questions = paginate_questions(request, selection)
 
                 return jsonify({
                     "success": True,
@@ -192,7 +192,7 @@ def create_app(test_config=None):
     Try using the word "title" to start.
     """
 
-    @app.route("/trivia/questions", methods=["POST"])
+    @app.route("/trivia/questions/search", methods=["POST"])
     def search_questions():
         page =request.args.get('page', 1, type=int)
         start = (page - 1) * QUESTIONS_PER_PAGE

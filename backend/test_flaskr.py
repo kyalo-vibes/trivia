@@ -87,13 +87,13 @@ class TriviaTestCase(unittest.TestCase):
         data = json.loads(res.data)
         pass
 
-    def test_422_new_question_fails(self):
-        res = self.client().post('/trivia/questions', json=self.new_question)
-        data = json.loads(res.data)
-        pass
+    # def test_422_new_question_fails(self):
+    #     res = self.client().post('/trivia/questions', json=self.new_question)
+    #     data = json.loads(res.data)
+    #     pass
 
     def test_get_search_question(self):
-        res = self.client().post('/trivia/questions', json={'search': 'Taj Mahal'})
+        res = self.client().post('/trivia/questions/search?search=Taj', data=json.dumps({"search": "Taj"}), content_type='application/json')
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 200)
