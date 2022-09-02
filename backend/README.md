@@ -52,9 +52,7 @@ The `--reload` flag will detect file changes and restart the server automaticall
 
 ## Endpoints
 
-### Documentation Example
-
-`GET '/trivia/categories'`
+### `GET '/trivia/categories'`
 
 - Fetches a dictionary of categories in which the keys are the ids and the value is the corresponding string of the category
 - Request Arguments: None
