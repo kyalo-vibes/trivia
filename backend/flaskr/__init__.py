@@ -9,6 +9,8 @@ from models import setup_db, Question, Category
 
 QUESTIONS_PER_PAGE = 10
 
+# helper function to paginate questions to 10 per page
+
 
 def paginate_questions(request, selection):
     page = request.args.get("page", 1, type=int)
@@ -19,16 +21,14 @@ def paginate_questions(request, selection):
     current_questions = questions[start:end]
 
     return current_questions
- 
+
+
 def create_app(test_config=None):
     # create and configure the app
     app = Flask(__name__)
     setup_db(app)
 
-    """
-    @TODO: Set up CORS. Allow '*' for origins. Delete the sample route after completing the TODOs
-    """
-    
+    # Set up CORS to use trivia as base URL
     CORS(app, resources={r"/trivia/*": {"origins": '*'}})
     # CORS(app)
     """
@@ -45,19 +45,18 @@ def create_app(test_config=None):
         )
         return response
 
-    """
-    @TODO:
-    Create an endpoint to handle GET requests
-    for all available categories.
-    """
-
+    # origin point of all APIs
     @cross_origin()
+    # GET categories API that fetches all categories and orders in ascending
+    # order
     @app.route('/trivia/categories', methods=["GET"])
     def get_categories():
         categories = Category.query.order_by(Category.id).all()
-        categories_dict = {category.id : category.type for category in categories}
+        categories_dict = {
+            category.id: category.type for category in categories}
 
-        if(len(categories_dict) == 0):
+        # raise 404 if categories_dict still has no entry
+        if (len(categories_dict) == 0):
             abort(404)
 
         return jsonify({
@@ -66,19 +65,7 @@ def create_app(test_config=None):
             "total_categories": len(Category.query.all())
         })
 
-    """
-    @TODO:
-    Create an endpoint to handle GET requests for questions,
-    including pagination (every 10 questions).
-    This endpoint should return a list of questions,
-    number of total questions, current category, categories.
-
-    TEST: At this point, when you start the application
-    you should see questions and categories generated,
-    ten questions per page and pagination at the bottom of the screen for three pages.
-    Clicking on the page numbers should update the questions.
-    """
-
+    # GET questions API that will only fetch 10 questions per page
 
     @app.route('/trivia/questions')
     def get_paginated_questions():
@@ -86,11 +73,13 @@ def create_app(test_config=None):
         current_questions = paginate_questions(request, selection)
 
         categories = Category.query.all()
-        categories_dict = {category.id : category.type for category in categories}
+        categories_dict = {
+            category.id: category.type for category in categories}
 
+        # if no questions are found for page, raise 404 error
         if len(current_questions) == 0:
             abort(404)
-        
+
         return jsonify({
             "success": True,
             "questions": current_questions,
@@ -98,45 +87,29 @@ def create_app(test_config=None):
             "categories": categories_dict
         })
 
-
-    """
-    @TODO:
-    Create an endpoint to DELETE question using a question ID.
-
-    TEST: When you click the trash icon next to a question, the question will be removed.
-    This removal will persist in the database and when you refresh the page.
-    """
-
+    # DELETE question API that will delete question of given question_id
 
     @app.route("/trivia/questions/<int:question_id>", methods=["DELETE"])
     def delete_question(question_id):
-            question = Question.query.filter(Question.id == question_id).one_or_none()
+        question = Question.query.filter(
+            Question.id == question_id).one_or_none()
 
-            if question is None:
-                abort(404)
+        # raise 404 if no question belongs to the given id
+        if question is None:
+            abort(404)
 
-            question.delete()
-            selection = Question.query.order_by(Question.id).all()
-            current_questions = paginate_questions(request, selection)
+        question.delete()
+        selection = Question.query.order_by(Question.id).all()
+        current_questions = paginate_questions(request, selection)
 
-            return jsonify({
-                "success": True,
-                "deleted": question_id,
-                "questions": current_questions,
-                "total_questions": len(Question.query.all()),
-            })
-        
+        return jsonify({
+            "success": True,
+            "deleted": question_id,
+            "questions": current_questions,
+            "total_questions": len(Question.query.all()),
+        })
 
-    """
-    @TODO:
-    Create an endpoint to POST a new question,
-    which will require the question and answer text,
-    category, and difficulty score.
-
-    TEST: When you submit a question on the "Add" tab,
-    the form will clear and the question will appear at the end of the last page
-    of the questions list in the "List" tab.
-    """
+    # Create question API that will add a new entry to questions table
 
     @app.route("/trivia/questions", methods=["POST"])
     def create_question():
@@ -157,12 +130,16 @@ def create_app(test_config=None):
 
                 return jsonify({
                     "success": True,
-                    "quesitons":current_questions,
+                    "quesitons": current_questions,
                     "total_questions": len(selection.all())
                 })
 
             else:
-                question = Question(question=new_question, answer=new_answer, category=new_category, difficulty=new_difficulty)
+                question = Question(
+                    question=new_question,
+                    answer=new_answer,
+                    category=new_category,
+                    difficulty=new_difficulty)
                 question.insert()
 
                 selection = Question.query.order_by(Question.id).all()
@@ -175,32 +152,26 @@ def create_app(test_config=None):
                     "total_questions": len(Question.query.all())
                 })
 
-        except:
+        # error in case of invalid information provided
+        except BaseException:
             abort(422)
 
-
-    """
-    @TODO:
-    Create a POST endpoint to get questions based on a search term.
-    It should return any questions for whom the search term
-    is a substring of the question.
-
-    TEST: Search by any phrase. The questions list will update to include
-    only question that include that string within their question.
-    Try using the word "title" to start.
-    """
-
+    # Search question API that uses ilike to find any question containing the
+    # search term
     @app.route("/trivia/questions/search", methods=["POST"])
     def search_questions():
-        page =request.args.get('page', 1, type=int)
+        page = request.args.get('page', 1, type=int)
         start = (page - 1) * QUESTIONS_PER_PAGE
         end = start + QUESTIONS_PER_PAGE
         # body = request.get_json()
         # search = body.get("search")
 
         search = request.args.get('search', '', type=str)
-        search_question = Question.query.filter(Question.question.ilike('%{}%'.format(search))).all()
+        search_question = Question.query.filter(
+            Question.question.ilike('%{}%'.format(search))).all()
         results = [question.format() for question in search_question]
+
+        # raise 422 if no search term is provided
         if search_question is None:
             abort(422)
 
@@ -209,26 +180,20 @@ def create_app(test_config=None):
             'total_questions': len(results),
             'success': True
         })
-    
 
-
-    """
-    @TODO:
-    Create a GET endpoint to get questions based on category.
-
-    TEST: In the "List" tab / main screen, clicking on one of the
-    categories in the left column will cause only questions of that
-    category to be shown.
-    """
-
-
-    @app.route('/trivia/categories/<int:category_id>/questions', methods=["GET"])
+    # GET questions by category that only fetches questions of a particular
+    # category_id
+    @app.route('/trivia/categories/<int:category_id>/questions',
+               methods=["GET"])
     def get_questions_by_category(category_id):
         category = Category.query.filter_by(id=category_id).one_or_none()
+
+        # raise 404 error if category provided does not exist
         if category is None:
             abort(404)
         try:
-            questions = Question.query.filter_by(category=str(category_id)).all()
+            questions = Question.query.filter_by(
+                category=str(category_id)).all()
             current_questions = paginate_questions(request, questions)
 
             return jsonify({
@@ -237,22 +202,11 @@ def create_app(test_config=None):
                 'current_category': category_id,
                 'questions': current_questions
             })
-
-        except:
+        # raise 400 error if try does not execute properly
+        except BaseException:
             abort(400)
-    """
-    @TODO:
-    Create a POST endpoint to get questions to play the quiz.
-    This endpoint should take category and previous question parameters
-    and return a random questions within the given category,
-    if provided, and that is not one of the previous questions.
 
-    TEST: In the "Play" tab, after a user selects "All" or a category,
-    one question at a time is displayed, the user is allowed to answer
-    and shown whether they were correct or not.
-    """
-
-
+    # Play quiz API for fetching random questions to play quiz
     @app.route('/trivia/play', methods=["POST"])
     def get_quiz_questions():
         try:
@@ -262,10 +216,20 @@ def create_app(test_config=None):
 
             category_id = category['id']
             next_question = None
+
+            # check if category_id is null
             if category_id != 0:
-                not_questions = Question.query.filter_by(category=category_id).filter(Question.id.notin_((previous_questions))).all()
+                # filter questions and fetch only those not in previous
+                # questions in specified category
+                not_questions = Question.query.filter_by(
+                    category=category_id).filter(
+                    Question.id.notin_(
+                        (previous_questions))).all()
             else:
-                not_questions = Question.query.filter(Question.id.notin_((previous_questions))).all()
+                # filter questions and fetch only those not in previous
+                # questions in any category
+                not_questions = Question.query.filter(
+                    Question.id.notin_((previous_questions))).all()
             if len(not_questions) > 0:
                 next_question = random.choice(not_questions).format()
             return jsonify({
@@ -273,14 +237,13 @@ def create_app(test_config=None):
                 'question': next_question
             })
 
-        except:
+        # raise 422 error if try does not execute properly
+        except BaseException:
             abort(422)
 
-    """
-    @TODO:
-    Create error handlers for all expected errors
-    including 404 and 422.
-    """
+    '''
+    ERROR HANDLERS
+    '''
     @app.errorhandler(400)
     def bad_request(error):
         return jsonify({
@@ -308,9 +271,8 @@ def create_app(test_config=None):
     @app.errorhandler(500)
     def server_error(error):
         return jsonify({
-            'success':False,
+            'success': False,
             'error': 500,
             'message': 'internal server error'
         }), 500
     return app
-
