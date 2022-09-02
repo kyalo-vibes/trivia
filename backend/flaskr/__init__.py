@@ -110,7 +110,6 @@ def create_app(test_config=None):
 
     @app.route("/trivia/questions/<int:question_id>", methods=["DELETE"])
     def delete_question(question_id):
-        try:
             question = Question.query.filter(Question.id == question_id).one_or_none()
 
             if question is None:
@@ -126,8 +125,7 @@ def create_app(test_config=None):
                 "questions": current_questions,
                 "total_questions": len(Question.query.all()),
             })
-        except:
-            abort(422)
+        
 
     """
     @TODO:
@@ -300,11 +298,11 @@ def create_app(test_config=None):
         }), 404
 
     @app.errorhandler(422)
-    def unprocessable(error):
+    def request_unprocessable(error):
         return jsonify({
             'success': False,
             'error': 422,
-            'message': unprocessable
+            'message': 'unprocessable'
         }), 422
 
     @app.errorhandler(500)
