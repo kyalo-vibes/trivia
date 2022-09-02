@@ -52,7 +52,7 @@ The `--reload` flag will detect file changes and restart the server automaticall
 
 ## Endpoints
 
-|HTTP Header   | Endpoints                                              | Functionality                                          |                             
+|Method   | API Endpoints                                              | Purpose                                          |                             
 |--------------| -------------------------------------------------------|:-------------------------------------------------------:|
 |    GET       |```/trivia/categories```                                   |```Fetches a dictionary of categories```                 |      
 |    GET      |```/trivia/questions```                                    |```Fetches a dictionary of 10 questions```                             |
@@ -77,6 +77,99 @@ The `--reload` flag will detect file changes and restart the server automaticall
   "4": "History",
   "5": "Entertainment",
   "6": "Sports"
+}
+```
+
+### `GET '/trivia/questions'`
+
+- Fetches a dictionary of questions in which the keys are the ids and the value is the corresponding string of the question
+- Request Arguments: None
+- Returns: An object with a single key, `questions`, that contains an object of `id: question_string` key: value pairs limited to only 10 results per page.
+
+```json
+{
+  "categories": {
+    "1": "Science",
+    "2": "Art",
+    "3": "Geography",
+    "4": "History",
+    "5": "Entertainment",
+    "6": "Sports"
+  },
+  "questions": [
+    {
+      "answer": "Apollo 13",
+      "category": 5,
+      "difficulty": 4,
+      "id": 2,
+      "question": "What movie earned Tom Hanks his third straight Oscar nomination, in 1996?"
+    },
+    {
+      "answer": "Tom Cruise",
+      "category": 5,
+      "difficulty": 4,
+      "id": 4,
+      "question": "What actor did author Anne Rice first denounce, then praise in the role of her beloved Lestat?"
+    },
+    {
+      "answer": "Maya Angelou",
+      "category": 4,
+      "difficulty": 2,
+      "id": 5,
+      "question": "Whose autobiography is entitled 'I Know Why the Caged Bird Sings'?"
+    },
+    {
+      "answer": "Edward Scissorhands",
+      "category": 5,
+      "difficulty": 3,
+      "id": 6,
+      "question": "What was the title of the 1990 fantasy directed by Tim Burton about a young man with multi-bladed appendages?"
+    },
+    {
+      "answer": "Muhammad Ali",
+      "category": 4,
+      "difficulty": 1,
+      "id": 9,
+      "question": "What boxer's original name is Cassius Clay?"
+    },
+    {
+      "answer": "Brazil",
+      "category": 6,
+      "difficulty": 3,
+      "id": 10,
+      "question": "Which is the only team to play in every soccer World Cup tournament?"
+    },
+    {
+      "answer": "Uruguay",
+      "category": 6,
+      "difficulty": 4,
+      "id": 11,
+      "question": "Which country won the first ever soccer World Cup in 1930?"
+    },
+    {
+      "answer": "George Washington Carver",
+      "category": 4,
+      "difficulty": 2,
+      "id": 12,
+      "question": "Who invented Peanut Butter?"
+    },
+    {
+      "answer": "Lake Victoria",
+      "category": 3,
+      "difficulty": 2,
+      "id": 13,
+      "question": "What is the largest lake in Africa?"
+    },
+    {
+      "answer": "The Palace of Versailles",
+      "category": 3,
+      "difficulty": 3,
+      "id": 14,
+      "question": "In which royal palace would you find the Hall of Mirrors?"
+    }
+  ],
+  "success": true,
+  "total_questions": 19
 }
 ```
 
