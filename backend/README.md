@@ -249,6 +249,7 @@ The `--reload` flag will detect file changes and restart the server automaticall
   "success": true,
   "total_questions": 3
 }
+```
 
 ### `POST '/trivia/play'`
 
