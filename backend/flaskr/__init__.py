@@ -252,6 +252,30 @@ def create_app(test_config=None):
     and shown whether they were correct or not.
     """
 
+
+    @app.route('/trivia/play', methods=["POST"])
+    def get_quiz_questions():
+        try:
+            body = request.get_json()
+            category = body.get('quiz_category', [])
+            previous_questions = body.get('previous_questions', [])
+
+            category_id = category['id']
+            next_question = None
+            if category_id != 0:
+                not_questions = Question.query.filter_by(category=category_id).filter(Question.id.notin_((previous_questions))).all()
+            else:
+                not_questions = Question.query.filter(Question.id.notin_((previous_questions))).all()
+            if len(not_questions) > 0:
+                next_question = random.choice(not_questions).format()
+            return jsonify({
+                'success': True,
+                'question': next_question
+            })
+
+        except:
+            abort(422)
+
     """
     @TODO:
     Create error handlers for all expected errors
