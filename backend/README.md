@@ -52,6 +52,17 @@ The `--reload` flag will detect file changes and restart the server automaticall
 
 ## Endpoints
 
+|HTTP Header   | Endpoints                                              | Functionality                                          |                             
+|--------------| -------------------------------------------------------|:-------------------------------------------------------:|
+|    GET       |```/trivia/categories```                                   |```Fetches a dictionary of categories```                 |      
+|    GET      |```/trivia/questions```                                    |```Fetches a dictionary of 10 questions```                             |
+|    DELETE    |```/trivia/questions/<int:question_id>```           |```Deletes a particular question```              |
+|    POST      |```/trivia/questions```                                    |```Creates a new question```           |
+|    POST      |```/trivia/questions/search```                             |```Returns only questions that match the search word```| 
+|    GET       |```/trivia/categories/<category_id>/questions```                      |```Fetches a dictionary of questions for a particular category```              |
+|    POST      |```/trivia/play```                               |```Starts the quiz and fetches random questions```          | 
+
+
 ### `GET '/trivia/categories'`
 
 - Fetches a dictionary of categories in which the keys are the ids and the value is the corresponding string of the category
