@@ -148,7 +148,7 @@ def create_app(test_config=None):
         new_answer = body.get("answer")
         new_category = body.get("category")
         new_difficulty = body.get("difficulty")
-        search = body.get("search", None)
+        search = body.get("search")
 
         try:
             if search:
@@ -197,10 +197,12 @@ def create_app(test_config=None):
         page =request.args.get('page', 1, type=int)
         start = (page - 1) * QUESTIONS_PER_PAGE
         end = start + QUESTIONS_PER_PAGE
-        search = request.form.get('search', '', type=str)
+        # body = request.get_json()
+        # search = body.get("search")
+
+        search = request.args.get('search', '', type=str)
         search_question = Question.query.filter(Question.question.ilike('%{}%'.format(search))).all()
         results = [question.format() for question in search_question]
-
         if search_question is None:
             abort(422)
 

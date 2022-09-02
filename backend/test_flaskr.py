@@ -93,12 +93,20 @@ class TriviaTestCase(unittest.TestCase):
     #     pass
 
     def test_get_search_question(self):
-        res = self.client().post('/trivia/questions/search?search=Taj', data=json.dumps({"search": "Taj"}), content_type='application/json')
+        res = self.client().post('/trivia/questions/search?search=Taj')
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 200)
         self.assertEqual(data['success'], True)
-        self.assertTrue(data['total_questions'])
+        self.assertEqual(data['total_questions'],1)
+
+    def test_search_question_no_results(self):
+        res = self.client().post('/trivia/questions/search?search=asdfg')
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['total_questions'], 0)
+        self.assertEqual(data['success'], True)
 
     def test_get_questions_by_category(self):
         res = self.client().get('/trivia/categories/4/questions')
