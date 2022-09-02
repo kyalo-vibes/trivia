@@ -146,7 +146,7 @@ def create_app(test_config=None):
         new_answer = body.get("answer")
         new_category = body.get("category")
         new_difficulty = body.get("difficulty")
-        search = body.get("search")
+        search = body.get("search", None)
 
         try:
             if search:

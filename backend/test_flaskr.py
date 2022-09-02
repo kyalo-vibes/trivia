@@ -21,7 +21,7 @@ class TriviaTestCase(unittest.TestCase):
         self.new_question = {
             "question": "Who is Chelsea's most prolific striker?",
             "answer": "Didier Drogba",
-            "category": "6",
+            "category": 6,
             "difficulty": 2
         }
 
@@ -69,18 +69,18 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data["message"], "resource not found")
 
 
-    # def test_delete_question(self):
-    #     res = self.client().delete("/trivia/questions/2")
-    #     data = json.loads(res.data)
+    def test_delete_question(self):
+        res = self.client().delete("/trivia/questions/2")
+        data = json.loads(res.data)
 
-    #     question = Question.query.filter(Question.id == 1).one_or_none()
+        question = Question.query.filter(Question.id == 1).one_or_none()
 
-    #     self.assertEqual(res.status_code, 200)
-    #     self.assertEqual(data['success'], True)
-    #     self.assertEqual(data['deleted'], 2)
-    #     self.assertTrue(data['total_questions'])
-    #     self.assertTrue(len(data['questions']))
-    #     self.assertEqual(question, None)
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertEqual(data['deleted'], 2)
+        self.assertTrue(data['total_questions'])
+        self.assertTrue(len(data['questions']))
+        self.assertEqual(question, None)
 
     def test_404_delete_inexistent_question(self):
         res = self.client(). delete('/trivia/questions/1000')

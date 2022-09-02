@@ -68,8 +68,10 @@ The `--reload` flag will detect file changes and restart the server automaticall
 - Fetches a dictionary of categories in which the keys are the ids and the value is the corresponding string of the category
 - Request Arguments: None
 - Returns: An object with a single key, `categories`, that contains an object of `id: category_string` key: value pairs.
+Try: `curl http://127.0.0.1:5000/trivia/categories`
 
 ```json
+{
 {
   "1": "Science",
   "2": "Art",
@@ -78,6 +80,10 @@ The `--reload` flag will detect file changes and restart the server automaticall
   "5": "Entertainment",
   "6": "Sports"
 }
+ "success": true,
+  "total_categories": 6
+}
+
 ```
 
 ### `GET '/trivia/questions'`
@@ -85,6 +91,7 @@ The `--reload` flag will detect file changes and restart the server automaticall
 - Fetches a dictionary of questions in which the keys are the ids and the value is the corresponding string of the question
 - Request Arguments: None
 - Returns: An object with a single key, `questions`, that contains an object of `id: question_string` key: value pairs limited to only 10 results per page.
+Try: `curl http://127.0.0.1:5000/trivia/categories`
 
 ```json
 {
@@ -129,6 +136,8 @@ The `--reload` flag will detect file changes and restart the server automaticall
 - Deletes the question that corresponds to the given question ID. 
 - Request Arguments: question_id
 - Returns: An object with success message and list of the remaining questions after deletion.
+Try: `curl http://127.0.0.1:5000/trivia/questions/2 -X DELETE`
+
 
 ```json
 {
@@ -160,6 +169,105 @@ The `--reload` flag will detect file changes and restart the server automaticall
   "total_questions": 18
 }
 
+```
+
+### `POST '/trivia/questions'`
+
+- Posts a new question into the database with question, answer, category and difficulty fields.
+- Request Arguments: None
+- Returns: An object with a success message and the list of new questions after insertion.
+Try: `curl http://127.0.0.1:5000/trivia/questions -X POST -H "Content-Type: application/json" -d '{"question": "Who is Chelsea's most prolific striker?", "answer": "Didier Drogba", "category": 6, "difficulty": 2}'`
+
+
+```json
+{
+  "1": "Science",
+  "2": "Art",
+  "3": "Geography",
+  "4": "History",
+  "5": "Entertainment",
+  "6": "Sports"
+}
+```
+
+### `POST '/trivia/questions/search'`
+
+- Searches for questions that match the search word provided.
+- Request Arguments: search word
+- Returns: A dictionary of questions that matched with the search term.
+Try: `curl http://127.0.0.1:5000/trivia/questions/search?search=Taj -X POST`
+
+```json
+{
+  "questions": [
+    {
+      "answer": "Agra",
+      "category": 3,
+      "difficulty": 2,
+      "id": 15,
+      "question": "The Taj Mahal is located in which Indian city?"
+    }
+  ],
+  "success": true,
+  "total_questions": 1
+}
+```
+
+### `GET '/trivia/categories/<category_id>/questions'`
+
+- Fetches a dictionary of questions belonging to the category specified.
+- Request Arguments: category_id
+- Returns: A dictionary of questions under the given category_id.
+Try: `curl http://127.0.0.1:5000/trivia/categories/1/questions`
+
+```json
+{
+  "current_category": 1,
+  "questions": [
+    {
+      "answer": "The Liver",
+      "category": 1,
+      "difficulty": 4,
+      "id": 20,
+      "question": "What is the heaviest organ in the human body?"
+    },
+    {
+      "answer": "Alexander Fleming",
+      "category": 1,
+      "difficulty": 3,
+      "id": 21,
+      "question": "Who discovered penicillin?"
+    },
+    {
+      "answer": "Blood",
+      "category": 1,
+      "difficulty": 4,
+      "id": 22,
+      "question": "Hematology is a branch of medicine involving the study of what?"
+    }
+  ],
+  "success": true,
+  "total_questions": 3
+}
+
+### `POST '/trivia/play'`
+
+- Starts the quiz by fetching randoming questions for the user to post answers.
+- Request Arguments: search word
+- Returns: A dictionary of that has not already been used.
+Try: `curl http://127.0.0.1:5000/trivia/play -X POST -H "Content-Type: application/json" -d '{"previous_questions": [], "quiz_category": {"type": "sports", "id": "6"}}'`
+
+```json
+{
+  "question": {
+    "answer": "Uruguay",
+    "category": 6,
+    "difficulty": 4,
+    "id": 11,
+    "question": "Which country won the first ever soccer World Cup in 1930?"
+  },
+  "success": true
+}
 ```
 
 ## Testing
