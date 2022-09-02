@@ -91,7 +91,7 @@ The `--reload` flag will detect file changes and restart the server automaticall
 - Fetches a dictionary of questions in which the keys are the ids and the value is the corresponding string of the question
 - Request Arguments: None
 - Returns: An object with a single key, `questions`, that contains an object of `id: question_string` key: value pairs limited to only 10 results per page.
-- Try: `curl http://127.0.0.1:5000/trivia/categories`
+- Try: `curl http://127.0.0.1:5000/trivia/questions`
 
 ```json
 {
