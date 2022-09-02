@@ -221,6 +221,25 @@ def create_app(test_config=None):
     category to be shown.
     """
 
+
+    @app.route('/trivia/categories/<int:category_id>/questions', methods=["GET"])
+    def get_questions_by_category(category_id):
+        category = Category.query.filter_by(id=category_id).one_or_none()
+        if category is None:
+            abort(404)
+        try:
+            questions = Question.query.filter_by(category=str(category_id)).all()
+            current_questions = paginate_questions(request, questions)
+
+            return jsonify({
+                'success': True,
+                'total_questions': len(questions),
+                'current_category': category_id,
+                'questions': current_questions
+            })
+
+        except:
+            abort(400)
     """
     @TODO:
     Create a POST endpoint to get questions to play the quiz.
