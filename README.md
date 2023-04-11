@@ -34,6 +34,5 @@ The [frontend](./frontend/README.md) directory contains a complete React fronten
 2. `frontend/src/components/FormView.js`
 3. `frontend/src/components/QuizView.js`
 
-By making notes ahead of time, you will practice the core skill of being able to read and understand code and will have a simple plan to follow to build out the endpoints of your backend API.
 
 > View the [Frontend README](./frontend/README.md) for more details.
